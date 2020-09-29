@@ -32,6 +32,7 @@ def read_multiple_fasta(files):
 
 def write_fa_dict(files, savename, log):
     """ A function to write .txt values of .fasta output """
+    now = time.localtime(time.time()). # Track the time it takes.
     master = read_multiple_fasta(files)
     with open(savename, 'w') as o:
         if log:
@@ -48,6 +49,7 @@ def write_fa_dict(files, savename, log):
                     line = f"{bin_id}\t{defline}\n"
                 o.write(line)
         if log:
+            now = time.localtime(time.time()). # Track the time it takes.
             lg.write(f"Time ended: {time.asctime(now)}\n")
 
 
