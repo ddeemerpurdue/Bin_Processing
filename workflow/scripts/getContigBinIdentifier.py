@@ -3,6 +3,7 @@
 import os
 import argparse
 from Bio import SeqIO
+import time
 
 
 def return_deflines(file):
@@ -33,6 +34,9 @@ def write_fa_dict(files, savename, log):
     """ A function to write .txt values of .fasta output """
     master = read_multiple_fasta(files)
     with open(savename, 'w') as o:
+        if log:
+            with open(log, 'a') as lg:
+                lg.write(f"Time started: {time.asctime(now)}\n")
         for bin_id, deflines in master.items():
             if log:
                 with open(log, 'a') as lg:
@@ -43,6 +47,8 @@ def write_fa_dict(files, savename, log):
                 else:
                     line = f"{bin_id}\t{defline}\n"
                 o.write(line)
+        if log:
+            lg.write(f"Time ended: {time.asctime(now)}\n")
 
 
 if __name__ == "__main__":
