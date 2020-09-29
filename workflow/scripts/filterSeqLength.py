@@ -28,11 +28,11 @@ def filter_fasta(file, threshold, output, log):
                 else:
                     removed += 1
     with open(log, 'w') as o:
-        timeline = f"Time started: {time.asctime(now)}"
+        timeline = f"Time started: {time.asctime(now)}\n"
         o.write(timeline)
-        keptline = f"{kept} entries were kept."
+        keptline = f"{kept} entries were kept.\n"
         o.write(keptline)
-        removedline = f"{removed} entries were removed."
+        removedline = f"{removed} entries were removed.\n"
         o.write(removedline)
     return 0
 
@@ -58,4 +58,3 @@ if __name__ == "__main__":
     assert str(arg.Assembly).endswith(
         ('.fasta', '.fa')), "Invalid assembly file extension!"
     filter_fasta(arg.Assembly, arg.Length, arg.Output, arg.Log)
-

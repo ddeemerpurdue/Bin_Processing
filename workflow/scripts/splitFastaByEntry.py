@@ -84,4 +84,3 @@ if __name__ == "__main__":
     arg = parser.parse_args()
     write_entry_files(arg.Assembly, arg.OutputDirectory,
                       arg.ListName, arg.Parts, arg.Log)
-

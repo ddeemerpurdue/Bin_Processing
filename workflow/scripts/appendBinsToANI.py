@@ -1,16 +1,21 @@
 '''
+Author: Dane
+Program designed to take in the raw input from the fastANI snakemake
+pipeline and standardize it with bin information.
+Input requires a tab-delimited list of the binfiles as well.
+Note: Each bin to node identification file (1 per sample) NEEDS to be
+labeled in the format: <sample>.*
+where <sample> matches the sample completeley in the ANI file.
+For example, if in the ani file that sample names are 'particle' and
+'supernatant', the bin identification files must have a prefix starting
+with 'particle.' and 'supernatant.', such as 'particle.originalBins.txt'
+and 'supernatant.originalBins.txt'.
+Example useage:
+$ python add_bins.py -a ani.txt -o out.txt -b bin1.txt bin2.txt
+Again: bin files need to be in the specified format: sample.*
+'''
 import os
-import argparse
-
-parser = argparse.ArgumentParser(description="Parser")
-parser.add_argument("-b", "--Bins", required=True, nargs="*",
-                    help="One or more files with contig name and bin info")
-
-parser.add_argument("-a", "--ANI", help="ANI file created from FASTANI",
-                    required=True)
-parser.add_argument("-o", "--Output", help="Standardized ANI file to write to",
-                    required=True)
-argument = parser.parse_args()
+import time
 
 
 def get_bindict(binfile):
@@ -45,9 +50,15 @@ def get_all_bindict(binlist):
     return all_dict
 
 
-def append_bins_to_ani(binfile, anifile, output):
+def append_bins_to_ani(binfile, anifile, output, logfile):
+    '''
+    Append bin identifiers to ANI's raw output.
+    '''
+    now = time.localtime(time.time())
     writelist = []
     bins = get_all_bindict(binfile)
+    match_count = 0
+    nonmatch_count = 0
     # Parse through ANI file
     with open(output, 'w') as o:
         with open(anifile) as af:
@@ -66,13 +77,17 @@ def append_bins_to_ani(binfile, anifile, output):
                     total = line[4].strip()
                     if quer_node in bins[quer]:
                         quer_bin = bins[quer][quer_node]
+                        match_count += 1
                     else:
                         quer_bin = 'NoBin'
+                        nonmatch_count += 1
                     # Repeat for reference
                     if reference_node in bins[refer]:
                         ref_bin = bins[refer][reference_node]
+                        match_count += 1
                     else:
                         ref_bin = 'NoBin'
+                        nonmatch_count += 1
                     # Write all information to a file
                     new_info = '\t'.join([quer, refer, quer_node,
                                           reference_node, ani, orths,
@@ -81,6 +96,18 @@ def append_bins_to_ani(binfile, anifile, output):
                 else:
                     pass
                 constant_line = af.readline()
+    # Assert that some bins matches
+    # assert match_count > 0, "No contigs matched to a bin!"
+    # Finally, write the logfile:
+    with open(logfile, 'w') as lg:
+        lg.write(f"Time started: {time.asctime(now)}\n")
+        for bin_dic in bins.keys():
+            lg.write(
+                f"Sample {bin_dic} contains {len(bins[bin_dic])} contigs.\n")
+        lg.write(
+            f"{match_count} contigs were identified and {nonmatch_count} were labeled NoBin.\n")
+        now = time.localtime(time.time())
+        lg.write(f"Time finished: {time.asctime(now)}\n")
     return writelist
 
 
@@ -93,5 +120,8 @@ if __name__ == "__main__":
                         required=True)
     parser.add_argument("-o", "--Output", help="Standardized ANI file to write to",
                         required=True)
+    parser.add_argument("-l", "--Log", help="Log file to write to",
+                        required=True)
     argument = parser.parse_args()
-    append_bins_to_ani(argument.Bins, argument.ANI, argument.Output)
+    append_bins_to_ani(argument.Bins, argument.ANI,
+                       argument.Output, argument.Log)
