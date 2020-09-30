@@ -8,7 +8,11 @@
 ## Introduction
 This 3-phase processing pipeline is designed to both add and remove contigs from bins based on different reference annotations. Three main programs are utilized during this pipeline and correspond to a step: i.) CatBat ii.) fastANI and iii.) MetaErg. Step 1 both removes and add contigs, whereas steps 2 and 3 are limited to only adding contigs into bins for now. The end results are bin identification files and fasta files. The purpose of this is to be able to automatically run the processing steps with various combinations of parameters to see how the final bin product compares the to original results.
 
-### Initial Setup
+## Dependencies
+- pandas [pip install pandas]
+- fastANI [conda install -c bioconda fastani]
+
+## Initial Setup
 A specific directory structure is required to make sure the pipeline runs correctly.
 Clone this Git repository in order to establish the skeleton for the analysis:
 
@@ -31,17 +35,19 @@ The initial tree structure should look as follows:
 +-- input
 +-- workflow
 
-#### Configuration directory:  
+
+**Configuration directory:**  
 Inside this directory there should be 2 files:  
 ---
-### 1. config.yaml  
-This contains multiple variables needed for the pipeline.  
+1. config.yaml  
+- This contains multiple variables needed for the pipeline.  
 ---
 
 ---
-### 2. cluster.json  
-This file contains information for submitting the snakemake pipeline to a SLURM manager.  
+2. cluster.json  
+- This file contains information for submitting the snakemake pipeline to a SLURM manager.  
 ---
+
 
 #### Input directory:
 ./input  
@@ -92,6 +98,9 @@ For the GFF file, this file must contain an attribute with the name *genomedb_ac
     +-- taxonRemovedBinIDFromLogFile.py  
     +-- writeFastaFromBinID.py  
     +-- writeModeGffFeaturePerBin.py
-+-- snake.smk
-**Note**: All other files will be automatically generated throughout the pipeline.
-***
++-- snake.smk  
+**Note**: All other files will be automatically generated throughout the pipeline.  
+**Note**: Specific environmental dependency files for conda may be needed. For this pipeline,  
+installation a fastANI and pandas are the only requirements.
+
+
