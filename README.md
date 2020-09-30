@@ -33,26 +33,14 @@ The initial tree structure should look as follows:
 
 #### Configuration directory:  
 Inside this directory there should be 2 files:  
+---
 ### 1. config.yaml  
 This contains multiple variables needed for the pipeline.  
 ---
 
-
-### 2. cluster.json  
 ---
-\#config/cluster.json  
-
-{  
-    "\__default__":  
-    {  
-        "account": "standby",  
-        "mem": "20G",  
-        "time": "04:00:00",  
-        "cpus": 20,  
-        "ntasks-per-node": 20,  
-        "nodes": 1  
-    }  
-}  
+### 2. cluster.json  
+This file contains information for submitting the snakemake pipeline to a SLURM manager.  
 ---
 
 #### Input directory:
