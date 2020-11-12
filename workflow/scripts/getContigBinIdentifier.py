@@ -1,5 +1,3 @@
-'''
-
 import os
 import argparse
 from Bio import SeqIO
@@ -11,6 +9,7 @@ def return_deflines(file):
     assert file.lower().endswith(('fasta', 'fa')), "File does not end in .fasta or .fa"
     seq_dict = {rec.id: rec.seq for rec in SeqIO.parse(file, "fasta")}
     return list(seq_dict.keys())
+
 
 def read_multiple_fasta(files):
     """ Increase functionality of 'read_fasta' by allowing a list of multiple
@@ -32,7 +31,7 @@ def read_multiple_fasta(files):
 
 def write_fa_dict(files, savename, log):
     """ A function to write .txt values of .fasta output """
-    now = time.localtime(time.time()). # Track the time it takes.
+    now = time.localtime(time.time())  # Track the time it takes.
     master = read_multiple_fasta(files)
     with open(savename, 'w') as o:
         if log:
@@ -44,13 +43,14 @@ def write_fa_dict(files, savename, log):
                     lg.write(f"{bin_id} contains {len(deflines)} contigs\n")
             for defline in deflines:
                 if defline.startswith('super'):
-                    line=f"{bin_id}\t{defline.split('super_max_')[1]}\n"
+                    line = f"{bin_id}\t{defline.split('super_max_')[1]}\n"
                 else:
                     line = f"{bin_id}\t{defline}\n"
                 o.write(line)
         if log:
-            now = time.localtime(time.time()). # Track the time it takes.
-            lg.write(f"Time ended: {time.asctime(now)}\n")
+            now = time.localtime(time.time())  # Track the time it takes.
+            with open(log, 'a') as lg:
+                lg.write(f"Time ended: {time.asctime(now)}\n")
 
 
 if __name__ == "__main__":
@@ -65,4 +65,3 @@ if __name__ == "__main__":
     argument = parser.parse_args()
     log = str(argument.Log)
     write_fa_dict(argument.Files, argument.Output, log)
-
